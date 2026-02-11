@@ -2,70 +2,79 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Per Te ❤️</title>
     <style>
-        body { font-family: 'Arial', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #ffe6e6; }
-        .container { text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        h1 { color: #d63384; }
-        .buttons { margin-top: 20px; position: relative; height: 50px; }
-        button { padding: 15px 30px; font-size: 18px; cursor: pointer; border: none; border-radius: 10px; transition: 0.3s; }
-        #yesBtn { background-color: #28a745; color: white; margin-right: 10px; }
-        #noBtn { background-color: #dc3545; color: white; position: absolute; }
-        .hidden { display: none; }
-        img { width: 200px; margin-top: 20px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffdde1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Occupa tutto lo schermo */
+            margin: 0;
+            overflow: hidden; /* IMPEDISCE le barre di scorrimento */
+            position: relative; /* Necessario per il posizionamento assoluto */
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            max-width: 90%;
+            z-index: 10; /* Sta sopra a tutto tranne il tasto NO in volo */
+        }
+
+        h1 {
+            color: #ff4d4d;
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: row; /* I bottoni sono affiancati */
+            justify-content: center;
+            gap: 20px; /* Spazio tra i bottoni */
+            min-height: 60px; /* Riserva spazio */
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            font-weight: bold;
+        }
+
+        #yesBtn {
+            background-color: #28a745; /* Verde */
+            color: white;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        #noBtn {
+            background-color: #dc3545; /* Rosso */
+            color: white;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+            /* Importante: position absolute ci permette di muoverlo ovunque */
+            position: absolute; 
+        }
+
+        /* Classe per nascondere gli elementi */
+        .hidden {
+            display: none !important;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div id="quiz" class="container">
-        <h1>Vuoi essere la mia San Valentino? 🌹</h1>
-        <div class="buttons">
-            <button id="yesBtn">SÌ! ❤️</button>
-            <button id="noBtn">No 💔</button>
-        </div>
-    </div>
-
-    <div id="success" class="container hidden">
-        <h1>Sapevo che avresti detto di SÌ! 😍</h1>
-        <p>Ti amo tantissimo! ❤️</p>
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpndW16eGZpbmR4bm96cXp6eGZpbmR4bm96cXp6eGZpbmR4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KztT2c4u8mYYUiCiPR/giphy.gif">
-    </div>
-
-    <script>
-    const noBtn = document.getElementById('noBtn');
-    const yesBtn = document.getElementById('yesBtn');
-    const quiz = document.getElementById('quiz');
-    const success = document.getElementById('success');
-
-    // Funzione per spostare il tasto
-    const scappa = () => {
-        // Calcola spazio disponibile (larghezza e altezza finestra meno dimensione tasto)
-        const maxX = window.innerWidth - noBtn.offsetWidth;
-        const maxY = window.innerHeight - noBtn.offsetHeight;
-
-        // Genera posizioni casuali
-        const randomX = Math.floor(Math.random() * maxX);
-        const randomY = Math.floor(Math.random() * maxY);
-
-        // Applica le nuove coordinate
-        noBtn.style.left = randomX + 'px';
-        noBtn.style.top = randomY + 'px';
-    };
-
-    // Scappa quando il mouse si avvicina (PC)
-    noBtn.addEventListener('mouseover', scappa);
-
-    // Scappa quando viene toccato (Smartphone/Tablet)
-    noBtn.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // Impedisce il click reale
-        scappa();
-    });
-
-    // Mostra il messaggio di successo quando clicca SÌ
-    yesBtn.addEventListener('click', () => {
-        quiz.classList.add('hidden');
-        success.classList.remove('hidden');
-    });
-</script>
-</body>
-</html>

@@ -11,12 +11,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* Occupa tutto lo schermo */
+            height: 100vh;
             margin: 0;
-            overflow: hidden; /* IMPEDISCE le barre di scorrimento */
-            position: relative; /* Necessario per il posizionamento assoluto */
+            overflow: hidden;
+            position: relative;
         }
-
         .container {
             text-align: center;
             background: rgba(255, 255, 255, 0.9);
@@ -24,52 +23,47 @@
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             max-width: 90%;
-            z-index: 10; /* Sta sopra a tutto tranne il tasto NO in volo */
+            z-index: 10;
         }
-
         h1 {
             color: #ff4d4d;
             font-size: 2rem;
             margin-bottom: 30px;
         }
-
         .buttons {
             display: flex;
-            flex-direction: row; /* I bottoni sono affiancati */
+            flex-direction: row;
             justify-content: center;
-            gap: 20px; /* Spazio tra i bottoni */
-            min-height: 60px; /* Riserva spazio */
+            gap: 20px;
+            min-height: 60px;
         }
-
         button {
             padding: 15px 30px;
             font-size: 1.2rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.1s;
+            transition: all 0.3s ease;
             font-weight: bold;
         }
-
         #yesBtn {
-            background-color: #28a745; /* Verde */
+            background-color: #28a745;
             color: white;
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
         }
-
+        #yesBtn:hover {
+            transform: scale(1.1);
+        }
         #noBtn {
-            background-color: #dc3545; /* Rosso */
+            background-color: #dc3545;
             color: white;
             box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
-            /* Importante: position absolute ci permette di muoverlo ovunque */
-            position: absolute; 
+            position: absolute;
+            z-index: 5;
         }
-
-        /* Classe per nascondere gli elementi */
         .hidden {
             display: none !important;
         }
-
         img {
             max-width: 100%;
             border-radius: 15px;
@@ -78,7 +72,6 @@
     </style>
 </head>
 <body>
-
     <div id="quiz" class="container">
         <h1>Vuoi essere la mia San Valentino? 🌹</h1>
         <div class="buttons">
@@ -87,73 +80,68 @@
     </div>
     
     <button id="noBtn">No 💔</button>
-
+    
     <div id="success" class="container hidden">
         <h1>Evviva! 🎉</h1>
         <h2>Sapevo che avresti detto di SÌ! 😍</h2>
         <p>Ti amo tantissimo! ❤️</p>
         <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpndW16eGZpbmR4bm96cXp6eGZpbmR4bm96cXp6eGZpbmR4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KztT2c4u8mYYUiCiPR/giphy.gif" alt="Love Gif">
     </div>
-
+    
     <script>
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
         const quiz = document.getElementById('quiz');
         const success = document.getElementById('success');
-
-        // Posizioniamo inizialmente il tasto NO accanto al SÌ
+        
+        // Posiziona inizialmente il tasto NO accanto al SÌ
         function alignButtons() {
             const yesRect = yesBtn.getBoundingClientRect();
-            // Lo mettiamo 20px a destra del tasto SI
             noBtn.style.left = (yesRect.right + 20) + 'px';
             noBtn.style.top = yesRect.top + 'px';
         }
         
-        // Eseguiamo l'allineamento appena carica la pagina
         window.onload = alignButtons;
-
-        // FUNZIONE CHE FA SCAPPARE IL TASTO
+        
+        // FUNZIONE CHE FA SCAPPARE IL TASTO (CORRETTA!)
         const spostaBottone = () => {
-            // 1. Ottieni le dimensioni della finestra
+            // Dimensioni della finestra
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
-
-            // 2. Ottieni le dimensioni del bottone
+            
+            // Dimensioni del bottone
             const btnWidth = noBtn.offsetWidth;
             const btnHeight = noBtn.offsetHeight;
-
-            // 3. Calcola il limite massimo (Gabbia)
-            // Sottraiamo la larghezza del bottone COSI NON ESCE A DESTRA
-            // Sottraiamo un "margine" di 20px per sicurezza
-            const maxX = windowWidth - btnWidth - 20;
-            const maxY = windowHeight - btnHeight - 20;
-
-            // 4. Genera coordinate casuali dentro i limiti
-            const randomX = Math.random() * maxX;
-            const randomY = Math.random() * maxY;
-
-            // 5. Applica le nuove coordinate
-            // Usiamo Math.max(10, ...) per evitare che esca a SINISTRA/SOPRA
-            noBtn.style.left = Math.max(10, randomX) + 'px';
-            noBtn.style.top = Math.max(10, randomY) + 'px';
+            
+            // Calcola limiti con margine di sicurezza
+            const margin = 10;
+            const maxX = windowWidth - btnWidth - margin;
+            const maxY = windowHeight - btnHeight - margin;
+            
+            // Genera coordinate casuali DENTRO i limiti
+            const randomX = margin + Math.random() * (maxX - margin);
+            const randomY = margin + Math.random() * (maxY - margin);
+            
+            // Applica le coordinate (sono già sicure)
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
         };
-
-        // EVENTI (Quando scappa?)
         
-        // Su PC: appena il mouse entra nell'area del bottone
+        // Eventi per PC
         noBtn.addEventListener('mouseover', spostaBottone);
+        noBtn.addEventListener('mouseenter', spostaBottone);
         
-        // Su Telefono: appena il dito tocca il bottone
+        // Eventi per touch (mobile)
         noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Blocca il click standard
-            spostaBottone();    // Scappa!
+            e.preventDefault();
+            spostaBottone();
         });
-
-        // Quando clicca SÌ
+        
+        // Click su SÌ
         yesBtn.addEventListener('click', () => {
-            quiz.classList.add('hidden'); // Nascondi domanda
-            noBtn.classList.add('hidden'); // Nascondi definitivamente il tasto NO
-            success.classList.remove('hidden'); // Mostra la festa
+            quiz.classList.add('hidden');
+            noBtn.classList.add('hidden');
+            success.classList.remove('hidden');
         });
     </script>
 </body>

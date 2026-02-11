@@ -78,3 +78,83 @@
     </style>
 </head>
 <body>
+
+    <div id="quiz" class="container">
+        <h1>Vuoi essere la mia San Valentino? 🌹</h1>
+        <div class="buttons">
+            <button id="yesBtn">SÌ! ❤️</button>
+        </div>
+    </div>
+    
+    <button id="noBtn">No 💔</button>
+
+    <div id="success" class="container hidden">
+        <h1>Evviva! 🎉</h1>
+        <h2>Sapevo che avresti detto di SÌ! 😍</h2>
+        <p>Ti amo tantissimo! ❤️</p>
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpndW16eGZpbmR4bm96cXp6eGZpbmR4bm96cXp6eGZpbmR4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KztT2c4u8mYYUiCiPR/giphy.gif" alt="Love Gif">
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const quiz = document.getElementById('quiz');
+        const success = document.getElementById('success');
+
+        // Posizioniamo inizialmente il tasto NO accanto al SÌ
+        function alignButtons() {
+            const yesRect = yesBtn.getBoundingClientRect();
+            // Lo mettiamo 20px a destra del tasto SI
+            noBtn.style.left = (yesRect.right + 20) + 'px';
+            noBtn.style.top = yesRect.top + 'px';
+        }
+        
+        // Eseguiamo l'allineamento appena carica la pagina
+        window.onload = alignButtons;
+
+        // FUNZIONE CHE FA SCAPPARE IL TASTO
+        const spostaBottone = () => {
+            // 1. Ottieni le dimensioni della finestra
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            // 2. Ottieni le dimensioni del bottone
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+
+            // 3. Calcola il limite massimo (Gabbia)
+            // Sottraiamo la larghezza del bottone COSI NON ESCE A DESTRA
+            // Sottraiamo un "margine" di 20px per sicurezza
+            const maxX = windowWidth - btnWidth - 20;
+            const maxY = windowHeight - btnHeight - 20;
+
+            // 4. Genera coordinate casuali dentro i limiti
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+
+            // 5. Applica le nuove coordinate
+            // Usiamo Math.max(10, ...) per evitare che esca a SINISTRA/SOPRA
+            noBtn.style.left = Math.max(10, randomX) + 'px';
+            noBtn.style.top = Math.max(10, randomY) + 'px';
+        };
+
+        // EVENTI (Quando scappa?)
+        
+        // Su PC: appena il mouse entra nell'area del bottone
+        noBtn.addEventListener('mouseover', spostaBottone);
+        
+        // Su Telefono: appena il dito tocca il bottone
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Blocca il click standard
+            spostaBottone();    // Scappa!
+        });
+
+        // Quando clicca SÌ
+        yesBtn.addEventListener('click', () => {
+            quiz.classList.add('hidden'); // Nascondi domanda
+            noBtn.classList.add('hidden'); // Nascondi definitivamente il tasto NO
+            success.classList.remove('hidden'); // Mostra la festa
+        });
+    </script>
+</body>
+</html>

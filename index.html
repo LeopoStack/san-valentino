@@ -24,6 +24,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             max-width: 90%;
             z-index: 10;
+            position: relative;
         }
         h1 {
             color: #ff4d4d;
@@ -43,13 +44,13 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
             font-weight: bold;
         }
         #yesBtn {
             background-color: #28a745;
             color: white;
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+            transition: transform 0.2s;
         }
         #yesBtn:hover {
             transform: scale(1.1);
@@ -58,8 +59,9 @@
             background-color: #dc3545;
             color: white;
             box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
-            position: absolute;
-            z-index: 5;
+            position: fixed;
+            z-index: 9999;
+            transition: none;
         }
         .hidden {
             display: none !important;
@@ -101,43 +103,49 @@
             noBtn.style.top = yesRect.top + 'px';
         }
         
-        window.onload = alignButtons;
+        window.addEventListener('load', alignButtons);
+        window.addEventListener('resize', alignButtons);
         
-        // FUNZIONE CHE FA SCAPPARE IL TASTO (CORRETTA!)
+        // FUNZIONE CHE FA SCAPPARE IL TASTO
         const spostaBottone = () => {
-            // Dimensioni della finestra
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
             
-            // Dimensioni del bottone
             const btnWidth = noBtn.offsetWidth;
             const btnHeight = noBtn.offsetHeight;
             
-            // Calcola limiti con margine di sicurezza
-            const margin = 10;
+            // Margine di sicurezza
+            const margin = 20;
+            
+            // Calcola le coordinate casuali DENTRO i limiti dello schermo
+            const minX = margin;
             const maxX = windowWidth - btnWidth - margin;
+            const minY = margin;
             const maxY = windowHeight - btnHeight - margin;
             
-            // Genera coordinate casuali DENTRO i limiti
-            const randomX = margin + Math.random() * (maxX - margin);
-            const randomY = margin + Math.random() * (maxY - margin);
+            const randomX = minX + Math.random() * (maxX - minX);
+            const randomY = minY + Math.random() * (maxY - minY);
             
-            // Applica le coordinate (sono già sicure)
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
         };
         
-        // Eventi per PC
-        noBtn.addEventListener('mouseover', spostaBottone);
+        // PC: quando il mouse SI AVVICINA al bottone
         noBtn.addEventListener('mouseenter', spostaBottone);
         
-        // Eventi per touch (mobile)
+        // Mobile: quando tocchi il bottone
         noBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
             spostaBottone();
         });
         
-        // Click su SÌ
+        // Se riesci a cliccare NO (praticamente impossibile)
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            spostaBottone();
+        });
+        
+        // Quando clicca SÌ
         yesBtn.addEventListener('click', () => {
             quiz.classList.add('hidden');
             noBtn.classList.add('hidden');

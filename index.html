@@ -5,18 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Per Te ❤️</title>
     <style>
-        body { font-family: 'Arial', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #ffe6e6; }
-        .container { text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        h1 { color: #d63384; }
-        .buttons { margin-top: 20px; position: relative; height: 50px; }
-        button { padding: 15px 30px; font-size: 18px; cursor: pointer; border: none; border-radius: 10px; transition: 0.3s; }
-        #yesBtn { background-color: #28a745; color: white; margin-right: 10px; }
-        #noBtn { background-color: #dc3545; color: white; position: absolute; }
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffe6e6;
+            overflow: hidden; /* Evita che compaiano barre di scorrimento mentre il tasto scappa */
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+        h1 { color: #d63384; margin-bottom: 30px; }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+        #yesBtn {
+            background-color: #28a745;
+            color: white;
+        }
+        /* Il tasto NO parte normale, ma diventerà 'fixed' appena ci si avvicina */
+        #noBtn {
+            background-color: #dc3545;
+            color: white;
+            z-index: 999;
+        }
         .hidden { display: none; }
-        img { width: 200px; margin-top: 20px; }
+        img { width: 250px; border-radius: 15px; margin-top: 20px; }
     </style>
 </head>
 <body>
+
     <div id="quiz" class="container">
         <h1>Vuoi essere la mia San Valentino? 🌹</h1>
         <div class="buttons">
@@ -27,7 +63,7 @@
 
     <div id="success" class="container hidden">
         <h1>Sapevo che avresti detto di SÌ! 😍</h1>
-        <p>Ti amo tantissimo! ❤️</p>
+        <p style="font-size: 1.2rem;">Ti amo tantissimo! ❤️</p>
         <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpndW16eGZpbmR4bm96cXp6eGZpbmR4bm96cXp6eGZpbmR4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KztT2c4u8mYYUiCiPR/giphy.gif">
     </div>
 
@@ -37,17 +73,35 @@
         const quiz = document.getElementById('quiz');
         const success = document.getElementById('success');
 
-        // Fa scappare il tasto NO
-        noBtn.addEventListener('mouseover', () => {
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
+        const muoviBottone = () => {
+            // Impostiamo il tasto su 'fixed' così si muove su tutto lo schermo
+            noBtn.style.position = 'fixed';
+            
+            // Calcoliamo i margini per non farlo uscire mai dallo schermo
+            // Sottraiamo 100 pixel per sicurezza (dimensione approssimativa del tasto)
+            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+
+            const randomX = Math.max(10, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(10, Math.floor(Math.random() * maxY));
+
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        };
+
+        // Scappa al passaggio del mouse (Computer)
+        noBtn.addEventListener('mouseover', muoviBottone);
+
+        // Scappa al tocco (Smartphone)
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Blocca il click reale su mobile
+            muoviBottone();
         });
 
-        // Mostra il messaggio di successo
+        // Quando clicca SÌ
         yesBtn.addEventListener('click', () => {
             quiz.classList.add('hidden');
+            noBtn.classList.add('hidden'); // Nasconde il tasto NO che scappava
             success.classList.remove('hidden');
         });
     </script>
